@@ -97,7 +97,7 @@ const App: React.FC = () => {
             <TableHead>
               <TableRow>
                 <TableCell sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}>Country Name</TableCell>
-                <TableCell sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}>Country Code</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', fontSize: '1.2rem', width: '33%' }}>Country Code</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
