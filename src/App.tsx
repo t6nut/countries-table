@@ -63,6 +63,9 @@ const App: React.FC = () => {
         onChange={handleFilterChange}
         fullWidth
         margin="normal"
+        InputProps={{
+          inputRef: inputRef
+        }}
       />
 
       <TableContainer component={Paper}>
@@ -84,17 +87,17 @@ const App: React.FC = () => {
             <CircularProgress />
           </div>
         )}
-        {!loading && data && data.countries && (
+        {!loading && data?.countries && filteredCountries?.length! > 0 && (
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>Country Name</TableCell>
-                <TableCell>Country Code</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}>Country Name</TableCell>
+                <TableCell sx={{ fontWeight: 'bold', fontSize: '1.2rem' }}>Country Code</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {filteredCountries?.map((country: any) => (
-                <TableRow key={country.code}>
+              {filteredCountries?.map((country: any, index: number) => (
+                <TableRow key={country.code} sx={{ bgcolor: index % 2 === 0 ? '#f5f5f5' : 'transparent' }}>
                   <TableCell>{country.name}</TableCell>
                   <TableCell>{country.code}</TableCell>
                 </TableRow>
@@ -102,12 +105,20 @@ const App: React.FC = () => {
             </TableBody>
           </Table>
         )}
-        {!loading && !data?.countries && ( // Data loaded, but no countries
-          <Typography>No countries found.</Typography>
+        {!loading && data?.countries && filteredCountries?.length! === 0 && ( // Data loaded, but no countries
+          <TableRow>
+            <TableCell>
+              <Typography>No countries found.</Typography>
+            </TableCell>
+          </TableRow>
         )}
 
         {error && (
-          <Typography color="error">Error: {error.message}</Typography>
+          <TableRow>
+            <TableCell>
+              <Typography color="error">Error: {error.message}</Typography>
+            </TableCell>
+          </TableRow>
         )}
       </TableContainer>
     </div>
