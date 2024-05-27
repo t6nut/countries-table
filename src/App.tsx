@@ -32,7 +32,14 @@ const App: React.FC = () => {
     } 
   }, []);
 
-  const { loading, error, data } = useQuery(GET_COUNTRIES);
+  interface Country {
+    name: string;
+    code: string;
+  }
+
+  const { loading, error, data } = useQuery<
+  { countries: Country[]}
+  >(GET_COUNTRIES);
 
 
   const filteredCountries = data?.countries?.filter((country) =>
