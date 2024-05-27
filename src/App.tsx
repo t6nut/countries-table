@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useQuery, gql } from '@apollo/client';
 import {
+  Box,
   TextField,
   Table,
   TableBody,
@@ -51,7 +52,11 @@ const App: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: "2rem" }}>
+    <Box sx={{
+      maxWidth: 900,
+      mx: 'auto',
+      padding: '2rem'
+    }}>
       <Typography variant="h4" gutterBottom>
         Countries Table
       </Typography>
@@ -121,7 +126,7 @@ const App: React.FC = () => {
           </TableRow>
         )}
       </TableContainer>
-    </div>
+    </Box>
   );
 };
 
