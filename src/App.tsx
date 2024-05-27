@@ -1,57 +1,111 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useQuery, gql } from '@apollo/client';
+import {
+  TextField,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 
-const COUNTRIES_QUERY = gql`
-  query Countries {
+const GET_COUNTRIES = gql`
+  query GetCountries {
     countries {
-      code
       name
+      code
     }
   }
 `;
 
 const App: React.FC = () => {
   const [filter, setFilter] = useState('');
-  const { loading, error, data } = useQuery(COUNTRIES_QUERY);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFilter(event.target.value);
-  }
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.focus();
+    } 
+  }, []);
 
-  const filteredCountries = data?.countries?.filter((country) => 
+  const { loading, error, data } = useQuery(GET_COUNTRIES);
+
+
+  const filteredCountries = data?.countries?.filter((country) =>
     country.code.toLowerCase().includes(filter.toLowerCase())
   );
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error: {error.message}</p>;
+  const handleFilterChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFilter(event.target.value);
+  };
 
   return (
-    <div>
-      <h1>Countries Table</h1>
-      <input 
-        type="text"
+    <div style={{ padding: "2rem" }}>
+      <Typography variant="h4" gutterBottom>
+        Countries Table
+      </Typography>
+
+      <TextField 
+        label="Filter by Country Code"
         placeholder="Filter by country code"
         value={filter}
-        onChange={handleFilterChange} 
+        onChange={handleFilterChange}
+        fullWidth
+        margin="normal"
       />
-      <table>
-        <thead>
-          <tr>
-            <th>Country Name</th>
-            <th>Country Code</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredCountries?.map((country) => (
-            <tr key={country.code}>
-              <td>{country.name}</td>
-              <td>{country.code}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+
+      <TableContainer component={Paper}>
+        {loading && (
+          <div
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100%",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              backgroundColor: "rgba(255, 255, 255, 0.8",
+              zIndex: 1,
+            }}
+            >
+            <CircularProgress />
+          </div>
+        )}
+        {!loading && data && data.countries && (
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Country Name</TableCell>
+                <TableCell>Country Code</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredCountries?.map((country: any) => (
+                <TableRow key={country.code}>
+                  <TableCell>{country.name}</TableCell>
+                  <TableCell>{country.code}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        )}
+        {!loading && !data?.countries && ( // Data loaded, but no countries
+          <Typography>No countries found.</Typography>
+        )}
+
+        {error && (
+          <Typography color="error">Error: {error.message}</Typography>
+        )}
+      </TableContainer>
     </div>
   );
 };
+
 
 export default App;
